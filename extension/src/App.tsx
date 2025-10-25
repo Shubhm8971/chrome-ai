@@ -142,28 +142,36 @@ function App() {
       setOutput("⚠️ No input provided.");
     } else {
       switch (type) {
-        case "SUMMARIZE_TEXT":
-  setOutput(
-    inputText.length > 100
-      ? inputText.slice(0, 100) + "..."
-      : inputText
-  );
-  break;
+  case "OPEN_SETTINGS":
+    setShowSettings(true);
+    break;
+  case "SUMMARIZE_TEXT":
+  case "TRANSLATE_TEXT":
+  case "PROOFREAD_TEXT":
+  case "REWRITE_TEXT":
+  case "TRANSCRIBE_AUDIO":
+  case "MULTIMODAL_UPLOAD":
+  case "CUSTOM_TEMPLATES":
+  case "MOCK_OUTPUT":
+    fetch("http://localhost:5000/api/process", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: inputText, type }),
+    })
+      .then((res) => res.json())
+      .then((data) => setOutput(data.result))
+      .catch((err) => {
+        console.error("Greška u komunikaciji s backendom:", err);
+        setOutput("⚠️ Backend greška.");
+      });
+    break;
 
-        case "TRANSLATE_TEXT":
-        case "PROOFREAD_TEXT":
-        case "REWRITE_TEXT":
-        case "TRANSCRIBE_AUDIO":
-        case "MULTIMODAL_UPLOAD":
-        case "CUSTOM_TEMPLATES":
-        case "MOCK_OUTPUT":
-          setOutput(inputText);
-          break;
-        default:
-          setOutput("⚠️ Unknown action.");
-      }
-    }
-  };
+  default:
+    setOutput("⚠️ Unknown action.");
+} 
+}
+};
+
 
 const allButtons: { key: ButtonKey; icon: string; type: string }[] = [
   { key: "summarize", icon: "🧠", type: "SUMMARIZE_TEXT" },

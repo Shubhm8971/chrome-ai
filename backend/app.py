@@ -1,12 +1,14 @@
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # omogućava komunikaciju s frontendom na localhost:5173
+CORS(app)
 
-@app.route('/api/hello')
-def hello():
-    return jsonify(message="Zdravo iz Flask backenda!")
+@app.route('/api/process', methods=['POST'])
+def process():
+    data = request.get_json()
+    input_text = data.get('text', '')
+    action_type = data.get('type', '')
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    # Za sad samo vraćamo testni odgovor
+    return jsonify(result=f"Primljeno: '{input_text}' | Akcija: {action_type}")
