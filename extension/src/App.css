@@ -289,8 +289,12 @@ body.high-contrast .text-output {
 h2.title {
   font-size: 22px !important;
 }
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+.backend-message {
+  padding: 8px;
+  background-color: #1f2937;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
 
 

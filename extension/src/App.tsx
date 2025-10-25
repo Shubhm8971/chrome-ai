@@ -13,6 +13,8 @@ function App() {
   const [animationsEnabled, setAnimationsEnabled] = useState(true);
   const [highContrast, setHighContrast] = useState(false);
   const [language, setLanguage] = useState<LanguageKey>("en");
+  const [backendMessage, setBackendMessage] = useState("");
+
 
 
   const labels = {
@@ -122,6 +124,16 @@ function App() {
   useEffect(() => {
     localStorage.setItem("animationsEnabled", animationsEnabled.toString());
   }, [animationsEnabled]);
+
+  useEffect(() => {
+  fetch("http://localhost:5000/api/hello")
+    .then((res) => res.json())
+    .then((data) => setBackendMessage(data.message))
+    .catch((err) =>
+      console.error("Greška u komunikaciji s backendom:", err)
+    );
+}, []);
+
 
   const sendMessageToContent = (type: string) => {
     if (type === "OPEN_SETTINGS") {
@@ -249,7 +261,15 @@ const allButtons: { key: ButtonKey; icon: string; type: string }[] = [
               }
             }}
           />
+          {backendMessage && (
+  <div className="backend-message">
+    <p className="text-sm text-green-400 mt-2">
+      🔗 Backend kaže: {backendMessage}
+    </p>
+  </div>
+)}
         </>
+        
       )}
     </div>
   );
